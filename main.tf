@@ -88,9 +88,14 @@ resource "aws_subnet" "private_subnets" {
 #private route table
 resource "aws_route_table" "private-route-table" {
   vpc_id = aws_vpc.main.id
-  
+
   for_each = var.private_subnets
-  tags = merge(
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat-gateways[each.value["availability_zone"]].id
+    #availabilty_zone taken reference from public subnets of natgw
+  }
+   tags = merge(
     var.tags, 
     {Name = "${var.env}-${each.value["name"]}"}
     )
