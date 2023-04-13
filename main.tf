@@ -129,3 +129,10 @@ resource "aws_route_table_association" "private-association" {
   route_table_id = aws_route_table.private-route-table[each.value["name"]].id
 }
 
+#route to the default vpc peering to work.
+resource "aws_route" "route" {
+  route_table_id              = var.default_route_table
+  destination_ipv6_cidr_block = var.vpc_cidr
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+
